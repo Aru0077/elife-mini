@@ -2,10 +2,10 @@
 
 interface IAppOption {
   globalData: {
-	userInfo?: WechatMiniprogram.UserInfo,
-	env?:string
-  }
-  initCloud():void
-  userLogin():void
-  userInfoReadyCallback?: WechatMiniprogram.GetUserInfoSuccessCallback,
+    userInfo?: WechatMiniprogram.UserInfo;
+	env?: string;
+  };
+  initCloud(): void;
+  userLogin(): Promise<void>;
+  userInfoReadyCallback?: WechatMiniprogram.GetUserInfoSuccessCallback;
 }

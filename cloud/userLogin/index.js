@@ -4,28 +4,48 @@ const cloud = require("wx-server-sdk");
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 
 exports.main = async (event, context) => {
-	try {
-		// 记录请求信息用于调试
-		console.log("请求ID:", context.requestId);
-		console.log("接收到的事件数据:", event);
+  try {
+    const wxContext = cloud.getWXContext();
+    const db = cloud.database();
+    const userCollection = db.collection("users");
 
-		const wxContext = cloud.getWXContext();
+    // 检查用户是否存在
+    const existingUser = await userCollection
+      .where({
+        openid: wxContext.OPENID,
+      })
+      .get();
 
-		return {
-			success: true,
-			data: {
-				openid: wxContext.OPENID,
-				appid: wxContext.APPID,
-				unionid: wxContext.UNIONID,
-			},
-		};
-	} catch (error) {
-		console.error("userLogin 错误:", error);
+    let userData;
 
-		return {
-			success: false,
-			errCode: "USER_LOGIN_ERROR",
-			errMsg: error.message || "登录失败",
-		};
-	}
+    if (existingUser.data.length === 0) {
+      // 用户不存在，创建用户
+      const result = await userCollection.add({
+        data: {
+          openid: wxContext.OPENID,
+          created_at: new Date(),
+		  updated_at: new Date(),
+		  status:''
+        },
+      });
+    }
+
+    const addUser = await cloud.database().collection("users").add();
+    return {
+      success: true,
+      data: {
+        openid: wxContext.OPENID,
+        appid: wxContext.APPID,
+        unionid: wxContext.UNIONID,
+      },
+    };
+  } catch (error) {
+    console.error("userLogin 错误:", error);
+
+    return {
+      success: false,
+      errCode: "USER_LOGIN_ERROR",
+      errMsg: error.message || "登录失败",
+    };
+  }
 };
