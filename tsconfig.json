@@ -22,7 +22,8 @@
     ]
   },
   "include": [
-    "./**/*.ts"
+	"./**/*.ts",
+	"./cloud/**/*.ts"
   ],
   "exclude": [
     "node_modules"

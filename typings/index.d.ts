@@ -5,5 +5,7 @@ interface IAppOption {
 	userInfo?: WechatMiniprogram.UserInfo,
 	env?:string
   }
+  initCloud():void
+  userLogin():void
   userInfoReadyCallback?: WechatMiniprogram.GetUserInfoSuccessCallback,
 }

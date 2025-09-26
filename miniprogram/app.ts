@@ -1,11 +1,15 @@
 // app.ts
 App<IAppOption>({
-  globalData: {},
+  globalData: {
+	  env:'elife-mini-4gink45h3ba00ada'
+  },
   onLaunch() {
+	this.initCloud()
+	this.userLogin()
+  },
 
-	this.globalData = {
-		env: "elife-mini-4gink45h3ba00ada"
-	  };
+  // 初始化云开发
+  initCloud(){
     if (!wx.cloud) {
       console.error("请使用 2.2.3 或以上的基础库以使用云能力");
     } else {
@@ -14,27 +18,21 @@ App<IAppOption>({
         traceUser: true,
       });
 	}
-	
+  },
+
+  // 调用 userLogin 云函数 进行登录
+  userLogin(){
 	// 云函数登录获取openid
 	wx.cloud.callFunction({
 		name:'userLogin',
-		complete: res =>{
-			console.log(res);	
-		}
+		success: res =>{
+			console.log('登录成功：', res);
+		},
+		fail: err=>{
+			console.log('登录失败：', err);
+		},
 	})
-    // 展示本地存储能力
-    // const logs = wx.getStorageSync('logs') || []
-    // logs.unshift(Date.now())
-    // wx.setStorageSync('logs', logs)
-
-    // 登录
-    // wx.login({
-    //   success: res => {
-    //     console.log(res.code)
-    //     // 发送 res.code 到后台换取 openId, sessionKey, unionId
-    //   },
-    // })
-
-	
   },
+
+
 });
